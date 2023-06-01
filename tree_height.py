@@ -1,33 +1,40 @@
-# python3
-
 import sys
 import threading
-import numpy
 
+# This class will help us to create a node
+class Node:
+    def __init__(self):
+        self.children = []
 
-def compute_height(n, parents):
-    # Write this function
-    max_height = 0
-    # Your code here
-    return max_height
+# This function will help us to create a tree
+def create_tree(n, parents):
+    nodes = [Node() for _ in range(n)]
+    root = 0
+    for child_index in range(n):
+        parent_index = parents[child_index]
+        if parent_index == -1:
+            root = child_index
+        else:
+            nodes[parent_index].children.append(nodes[child_index])
+    return nodes[root]
 
+# This function will help us to compute the height of the tree
+def compute_height(node):
+    if not node.children:
+        return 1
+    else:
+        return 1 + max(compute_height(child) for child in node.children)
 
+# This function will help us to read input data and run the solution
 def main():
-    # implement input form keyboard and from files
-    
-    # let user input file name to use, don't allow file names with letter a
-    # account for github input inprecision
-    
-    # input number of elements
-    # input values in one variable, separate with space, split these values in an array
-    # call the function and output it's result
-    pass
+    n = int(input())
+    parents = list(map(int, input().split()))
+    tree = create_tree(n, parents)
+    print(compute_height(tree))
 
-# In Python, the default limit on recursion depth is rather low,
-# so raise it here for this problem. Note that to take advantage
-# of bigger stack, we have to launch the computation in a new thread.
-sys.setrecursionlimit(10**7)  # max depth of recursion
-threading.stack_size(2**27)   # new thread will get stack of such size
+# Increase the recursion limit and the stack size
+sys.setrecursionlimit(10**7)
+threading.stack_size(2**27)
+
+# Run the solution in a new thread
 threading.Thread(target=main).start()
-main()
-# print(numpy.array([1,2,3]))
