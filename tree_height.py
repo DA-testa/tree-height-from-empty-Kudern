@@ -1,40 +1,43 @@
-import sys
-import threading
+from collections import namedtuple
 
-# This class will help us to create a node
-class Node:
-    def __init__(self):
-        self.children = []
+Bracket = namedtuple("Bracket", ["char", "position"])
 
-# This function will help us to create a tree
-def create_tree(n, parents):
-    nodes = [Node() for _ in range(n)]
-    root = 0
-    for child_index in range(n):
-        parent_index = parents[child_index]
-        if parent_index == -1:
-            root = child_index
-        else:
-            nodes[parent_index].children.append(nodes[child_index])
-    return nodes[root]
+def are_matching(left, right):
+    return (left + right) in ["()", "[]", "{}"]
 
-# This function will help us to compute the height of the tree
-def compute_height(node):
-    if not node.children:
-        return 1
-    else:
-        return 1 + max(compute_height(child) for child in node.children)
+def find_mismatch(text):
+    opening_brackets_stack = []
+    for i, next in enumerate(text):
+        if next in "([{":
+            # Process opening bracket, add to stack
+            opening_brackets_stack.append(Bracket(next, i+1))
 
-# This function will help us to read input data and run the solution
+        if next in ")]}":
+            # Process closing bracket, check if matches last opening bracket
+            if len(opening_brackets_stack) == 0:
+                # no opening bracket to match with
+                return i+1
+            last_opening_bracket = opening_brackets_stack.pop()
+            if not are_matching(last_opening_bracket.char, next):
+                # not a match with the last opening bracket
+                return i+1
+
+    # after processing all characters
+    if len(opening_brackets_stack) != 0:
+        # there are some unmatched opening brackets left
+        last_unmatched_opening_bracket = opening_brackets_stack[0]
+        return last_unmatched_opening_bracket.position
+    
+    # all brackets are properly matched
+    return "Success"
+
 def main():
-    n = int(input())
-    parents = list(map(int, input().split()))
-    tree = create_tree(n, parents)
-    print(compute_height(tree))
+    text = input()
+    mismatch = find_mismatch(text)
+    if mismatch == "Success":
+        print(mismatch)
+    else:
+        print(mismatch)
 
-# Increase the recursion limit and the stack size
-sys.setrecursionlimit(10**7)
-threading.stack_size(2**27)
-
-# Run the solution in a new thread
-threading.Thread(target=main).start()
+if __name__ == "__main__":
+    main()
