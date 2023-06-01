@@ -27,25 +27,8 @@ def compute_height(node):
 
 # This function will help us to read input data and run the solution
 def main():
-    # implement input form keyboard and from files
-    input_type = input("Input from File or Keyboard? (F/K): ")
-    if input_type.upper() == "F":
-        # let user input file name to use, don't allow file names with letter a
-        file_name = input("Enter file name (should not contain letter 'a'): ")
-        while 'a' in file_name:
-            file_name = input("Enter file name (should not contain letter 'a'): ")
-        with open(file_name) as f:
-            n = int(f.readline())
-            parents = list(map(int, f.readline().split()))
-    elif input_type.upper() == "K":
-        # input number of elements
-        # input values in one variable, separate with space, split these values in an array
-        n = int(input())
-        parents = list(map(int, input().split()))
-    else:
-        print("Invalid input type. Please enter F for file or K for keyboard input.")
-        return
-    # call the function and output it's result
+    n = int(input())
+    parents = list(map(int, input().split()))
     tree = create_tree(n, parents)
     print(compute_height(tree))
 
